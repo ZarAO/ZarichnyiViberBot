@@ -3,29 +3,25 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Viber.Bot.NetCore.Middleware;
 
 namespace RedisInfoService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
+        public static string CONNECTION_STRING;
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
-            services.AddViberBotApi(Configuration);
+            Startup.CONNECTION_STRING = Configuration.GetConnectionString("SqlServerConnection");
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
 
