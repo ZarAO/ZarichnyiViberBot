@@ -99,3 +99,8 @@ ViberBotHelper/obj/Debug/netcoreapp3.1/ViberBotHelper.csproj.CoreCompileInputs.c
 ViberBotHelper/obj/Debug/netcoreapp3.1/ViberBotHelper.csproj.FileListAbsolute.txt
 ViberBotHelper/obj/Debug/netcoreapp3.1/ViberBotHelper.dll
 ViberBotHelper/obj/Debug/netcoreapp3.1/ViberBotHelper.pdb
+/ViberBotHelper/bin
+/ViberBotHelper/obj
+/.vs
+/ViberBotHelper/obj
+/ViberBotHelper/bin
