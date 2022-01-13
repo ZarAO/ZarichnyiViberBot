@@ -18,17 +18,18 @@ namespace ViberBotServer.Viber
             switch (message.Type) {
                 case MessageType.Text: {
                     TextMessage textMessage = (TextMessage) message;
+                    await _viberBot.SendTextMessageAsync(textMessage.Text, senderId);
                     break;
                 }
             }
         }
 
         public async Task onSubscribed(string userId) {
-            //await _viberBot.SendTextMessageAsync("Subscribed", userId);
+            await _viberBot.SendTextMessageAsync("Subscribed", userId);
         }
 
         public async Task onUnSubscribed(string userId) {
-            //await _viberBot.SendTextMessageAsync("UnSubscribed", userId);
+            await _viberBot.SendTextMessageAsync("UnSubscribed", userId);
         }
 
         public async Task onConversationStarted(string userId, string userName, string userAvatarUrl) {

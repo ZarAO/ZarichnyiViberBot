@@ -11,6 +11,7 @@ using ViberBotServer.Viber;
 
 namespace BotServer.Controllers
 {
+    [Route("[controller]")]
     public class ViberBotController : Controller
     {
         private readonly ILogger<ViberBotController> _logger;
@@ -30,6 +31,8 @@ namespace BotServer.Controllers
             _eventsHandler = new EventsHandler(_viberBot);
         }
 
+        [Route("SetWebHook")]
+        [HttpGet]
         public async Task<IActionResult> SetWebHook() {
             try {
                 await _viberBot.SetWebhookAsync();
@@ -42,16 +45,21 @@ namespace BotServer.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [Route("Index")]
         [HttpPost]
         public async Task<IActionResult> Index() {
             try {
                 _logger.LogDebug("Task: Index");
 
-                var body = new StreamReader(HttpContext.Request.Body).ReadToEnd();
+                string body;
+                using (StreamReader reader = new StreamReader(HttpContext.Request.Body)) {
+                    body = await reader.ReadToEndAsync();
+                }
                 var isSignatureValid = _viberBot.viberBotClient.ValidateWebhookHash(
                     HttpContext.Request.Headers[ViberBotClient.XViberContentSignatureHeader],
                     body);
+
+
 
                 _logger.LogDebug("CallbackData: " + body);
 

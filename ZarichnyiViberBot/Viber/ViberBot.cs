@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Viber.Bot;
 
@@ -20,7 +22,8 @@ namespace ViberBotServer.Viber
         }
 
         public async Task SetWebhookAsync() {
-            var result = await viberBotClient.SetWebhookAsync(viberBotOptions.WebApiEndpoint);
+            ICollection<EventType> eventTypes = Enum.GetValues(typeof(EventType)).Cast<EventType>().ToList();
+            var result = await viberBotClient.SetWebhookAsync(viberBotOptions.WebApiEndpoint, eventTypes);
             return;
         }
 
