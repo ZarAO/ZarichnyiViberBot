@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Runtime.InteropServices;
 
-namespace RedisInfoService
+namespace ZarichnyiViberBot
 {
 	public class Program
 	{

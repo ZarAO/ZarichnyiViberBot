@@ -62,7 +62,7 @@ namespace Viber.Bot
                         type = typeof(ContactMessage);
                         break;
                     case MessageType.Sticker:
-                        type = typeof(StickerMessage);
+                        type = typeof(RichMediaMessage);
                         break;
                     case MessageType.CarouselContent:
                         throw new NotImplementedException();

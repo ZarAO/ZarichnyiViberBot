@@ -44,6 +44,28 @@ namespace ViberBotServer.Viber
             return;
         }
 
+        public async Task SendRichMediaMessageAsync(string text, string userId, int buttonsGroupColumns, int buttonsGroupRows, string bgColor, string trackingData = null) {
+            var result = await viberBotClient.SendRichMediaMessageAsync(new RichMediaMessage {
+                Receiver = userId,
+                Sender = new UserBase {
+                    Name = this.viberBotOptions.ViberBotName
+                },
+                ButtonsGroupColumns = buttonsGroupColumns,
+                ButtonsGroupRows = buttonsGroupRows,
+                BGColor = bgColor,
+                Buttons = new[]
+                    {
+                        new KeyboardButton
+                        {
+                            Text = text,
+                            ActionBody = "none"
+                        }
+                    },
+                TrackingData = trackingData
+            });
+            return;
+        }
+
         public async Task SendBroadcastMessageAsync(string text, IList<string> usersId) {
             var result = await viberBotClient.SendBroadcastMessageAsync(new BroadcastMessage {
                 Sender = new UserBase {
@@ -81,6 +103,38 @@ namespace ViberBotServer.Viber
                             Text = buttonText,
                             ActionBody = actions
                         }
+                    }
+                },
+                TrackingData = trackingData
+            });
+            return;
+        }
+
+        public async Task SendKeyboard2MessageAsync(string userId, string messageText, string buttonText,
+            string buttonText2,
+            string actions, string trackingData) {
+            var result = await viberBotClient.SendKeyboardMessageAsync(new KeyboardMessage {
+                Receiver = userId,
+                Sender = new UserBase {
+                    Name = this.viberBotOptions.ViberBotName
+                },
+                Text = messageText,
+                Keyboard = new Keyboard {
+                    Buttons = new[]
+                    {
+                        new KeyboardButton
+                        {
+                            TextSize = TextSize.Regular,
+                            //TextVerticalAlign = TextVerticalAlign.Top,
+                            Text = buttonText2,
+                            ActionBody = actions
+                        },
+                        new KeyboardButton
+                        {
+                            Text = buttonText,
+                            ActionBody = actions
+                        }
+                        
                     }
                 },
                 TrackingData = trackingData

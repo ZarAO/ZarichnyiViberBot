@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Viber.Bot;
+using ZarichnyiViberBot.ViberDBHelper;
 
 namespace ViberBotServer.Viber
 {
@@ -34,8 +35,25 @@ namespace ViberBotServer.Viber
                 } else {
                     switch (GetActionType(message.TrackingData)) {
                         case "IMEI": {
-                            await _viberBot.SendKeyboardMessageAsync(senderId, Strings.STR_action_IMEI,
-                                Strings.STR_GETTO10, Strings.STR_action_GETTO10, Strings.STR_track_GETTO10);
+                            List<WalkAnalytics> data = DBUtils.GetWalkAnalyticsAllTime(textMessage.Text);
+                            if (data.Count == 0) {
+                                await _viberBot.SendTextMessageAsync(Strings.STR_BADREQUEST, senderId, Strings.STR_track_IMEI);
+                                break;
+                            }
+                            WalkAnalytics walkAnalytics = data.First<WalkAnalytics>();
+
+                            data = DBUtils.GetWalkAnalyticsOneDay(textMessage.Text);
+                            if (data.Count == 0) {
+                                await _viberBot.SendTextMessageAsync(Strings.STR_BADREQUEST, senderId, Strings.STR_track_IMEI);
+                                break;
+                            }
+                            WalkAnalytics walkAnalyticsOneDay = data.First<WalkAnalytics>();
+                            
+                            await _viberBot.SendKeyboardMessageAsync(senderId, String.Format(Strings.STR_action_IMEI, walkAnalytics.CountOfWalk,
+                                walkAnalytics.TotalDistance, walkAnalytics.TotalTime.TotalMinutes, walkAnalyticsOneDay.CountOfWalk,
+                                walkAnalyticsOneDay.TotalDistance, walkAnalyticsOneDay.TotalTime.TotalMinutes
+                                ),
+                                Strings.STR_GETTO10, Strings.STR_action_GETTO10, String.Format(Strings.STR_track_GETTO10, textMessage.Text));
                             break;
                         }
                         case "get": {
@@ -51,8 +69,29 @@ namespace ViberBotServer.Viber
                                 await IncorectMessage(senderId);
                                 break;
                             }
-                            await _viberBot.SendKeyboardMessageAsync(senderId, textMessage.Text,
+                            string imeiFromTrack = message.TrackingData.Substring(4);
+                            string rowsAllTime = "";
+                            List<TopWalk> data = DBUtils.GetTopWalkAllTime(imeiFromTrack);
+                            if (data.Count != 0) {
+                                data.ForEach(value => rowsAllTime += String.Format(Strings.STR_HTMLTablerowTemplate, value.WalkNumber.ToString().PadLeft(7, ' '),
+                                    Math.Round(value.Distance, 2).ToString().PadLeft(7, ' '), Math.Round(value.TimeWalk.TotalMinutes, 2).ToString().PadLeft(7, ' ')) +"\n");
+                            } 
+                            string tableAllTime = String.Format("{0}\n{1}", Strings.STR_HTMLTableTitleTemplate, rowsAllTime);
+
+                            string rowsOneDay = "";
+                            data = DBUtils.GetTopWalkOneDay(imeiFromTrack);
+                            if (data.Count != 0) {
+                                data.ForEach(value => rowsOneDay += String.Format(Strings.STR_HTMLTablerowTemplate, value.WalkNumber.ToString().PadLeft(7, ' '),
+                                    Math.Round(value.Distance, 2).ToString().PadLeft(7, ' '), Math.Round(value.TimeWalk.TotalMinutes, 2).ToString().PadLeft(7, ' ')));
+                            }
+                            string tableOneDay = String.Format("{0}\n{1}", Strings.STR_HTMLTableTitleTemplate, rowsOneDay);
+
+                            await _viberBot.SendTextMessageAsync($"{textMessage.Text}\n\n\nЗа все время: \n{tableAllTime}\nЗа сегодня: \n{tableOneDay}", senderId);
+
+                            await _viberBot.SendKeyboardMessageAsync(senderId, "",
                                 Strings.STR_GOBACK, Strings.STR_action_GOBACK, Strings.STR_track_GOBACK);
+
+                            
                             break;
                         }
                         case "back": {
