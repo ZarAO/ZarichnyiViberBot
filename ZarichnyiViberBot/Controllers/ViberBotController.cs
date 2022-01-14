@@ -50,16 +50,15 @@ namespace BotServer.Controllers
         public async Task<IActionResult> Index() {
             try {
                 _logger.LogDebug("Task: Index");
-
                 string body;
+
                 using (StreamReader reader = new StreamReader(HttpContext.Request.Body)) {
                     body = await reader.ReadToEndAsync();
                 }
+
                 var isSignatureValid = _viberBot.viberBotClient.ValidateWebhookHash(
                     HttpContext.Request.Headers[ViberBotClient.XViberContentSignatureHeader],
                     body);
-
-
 
                 _logger.LogDebug("CallbackData: " + body);
 
@@ -78,11 +77,11 @@ namespace BotServer.Controllers
                     case EventType.Subscribed:
                         await _eventsHandler.onSubscribed(user.Id);
                         break;
-                    case EventType.Unsubscribed:
-                        await _eventsHandler.onUnSubscribed(callbackData.UserId);
-                        break;
                     case EventType.Message:
-                        await _eventsHandler.onReceiveMessage(callbackData.Sender.Id, callbackData.MessageToken, callbackData.Message);
+                        await _eventsHandler.onReceiveMessage(callbackData.Sender.Id, callbackData.Message);
+                        break;
+                    default:
+                        Console.WriteLine($"Unidentified event \"{callbackData.Event}\"");
                         break;
                 }
 
@@ -90,7 +89,6 @@ namespace BotServer.Controllers
             }
             catch (Exception ex) {
                 _logger.LogError(ex, "Error: {ex.Message}", ex.Message);
-
                 return BadRequest(ex.Message);
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Viber.Bot;
 
@@ -32,13 +32,14 @@ namespace ViberBotServer.Viber
             return;
         }
 
-        public async Task SendTextMessageAsync(string text, string userId) {
+        public async Task SendTextMessageAsync(string text, string userId, string trackingData = null) {
             var result = await viberBotClient.SendTextMessageAsync(new TextMessage {
                 Receiver = userId,
                 Sender = new UserBase {
                     Name = this.viberBotOptions.ViberBotName
                 },
-                Text = text
+                Text = text,
+                TrackingData = trackingData
             });
             return;
         }
@@ -65,99 +66,24 @@ namespace ViberBotServer.Viber
             return;
         }
 
-        public async Task SendContactMessageAsync(string userId) {
-            var result = await viberBotClient.SendContactMessageAsync(new ContactMessage {
-                Receiver = userId,
-                Sender = new UserBase {
-                    Name = this.viberBotOptions.ViberBotName
-                },
-                Contact = new Contact {
-                    Name = "Brad Pitt",
-                    TN = "+0123456789"
-                }
-            });
-            return;
-        }
-
-        public async Task SendFileMessageAsync(string userId) {
-            var result = await viberBotClient.SendFileMessageAsync(new FileMessage {
-                Receiver = userId,
-                Sender = new UserBase {
-                    Name = this.viberBotOptions.ViberBotName
-                },
-                Media = "http://www.sample-videos.com/audio/mp3/crowd-cheering.mp3",
-                FileName = "audio.mp3",
-                Size = 443926
-            });
-            return;
-        }
-
-        public async Task SendLocationMessageAsync(string userId) {
-            var result = await viberBotClient.SendLocationMessageAsync(new LocationMessage {
-                Receiver = userId,
-                Sender = new UserBase {
-                    Name = this.viberBotOptions.ViberBotName
-                },
-                Location = new Location {
-                    Lon = 1,
-                    Lat = -2
-                }
-            });
-            return;
-        }
-
-        public async Task SendStickerMessageAsync(string userId) {
-            var result = await viberBotClient.SendStickerMessageAsync(new StickerMessage {
-                Receiver = userId,
-                Sender = new UserBase {
-                    Name = this.viberBotOptions.ViberBotName
-                },
-                StickerId = "40108"
-            });
-            return;
-        }
-
-        public async Task SendVideoMessageAsync(string userId) {
-            var result = await viberBotClient.SendVideoMessageAsync(new VideoMessage {
-                Receiver = userId,
-                Sender = new UserBase {
-                    Name = this.viberBotOptions.ViberBotName
-                },
-                Media = "https://github.com/mediaelement/mediaelement-files/blob/master/big_buck_bunny.mp4?raw=true",
-                Size = 5510872
-            });
-            return;
-        }
-
-        public async Task SendUrlMessageAsync(string userId) {
-            var result = await viberBotClient.SendUrlMessageAsync(new UrlMessage {
-                Receiver = userId,
-                Sender = new UserBase {
-                    Name = this.viberBotOptions.ViberBotName
-                },
-                Media = "https://www.google.com"
-            });
-            return;
-        }
-
-        public async Task SendKeyboardMessageAsync(string userId) {
+        public async Task SendKeyboardMessageAsync(string userId, string messageText, string buttonText, string actions, string trackingData) {
             var result = await viberBotClient.SendKeyboardMessageAsync(new KeyboardMessage {
                 Receiver = userId,
                 Sender = new UserBase {
                     Name = this.viberBotOptions.ViberBotName
                 },
-                Text = "Test keyboard",
+                Text = messageText,
                 Keyboard = new Keyboard {
                     Buttons = new[]
                     {
                         new KeyboardButton
                         {
-                            Text = "Button 1",
-                            ActionBody = "AB1"
+                            Text = buttonText,
+                            ActionBody = actions
                         }
                     }
                 },
-                TrackingData = "td"
+                TrackingData = trackingData
             });
             return;
         }
