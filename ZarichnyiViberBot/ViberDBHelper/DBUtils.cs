@@ -12,12 +12,12 @@ namespace ZarichnyiViberBot.ViberDBHelper
     {
         public static List<WalkAnalytics> GetWalkAnalyticsAllTime(string IMEI) {
             List<WalkAnalytics> walkAnalyticss = new List<WalkAnalytics>();
-            string sqlText = "SELECT "+
-                                "COUNT(1) AS CountOfWalk, " +
-                                "SUM(Distance) AS TotalDistance, " +
-                                "CAST(DATEADD(SECOND, SUM(DATEDIFF(SECOND, 0, CONVERT(TIME, TimeWalk))), 0) AS TIME(0)) AS TotalTime " +
-                            "FROM[dbo].[WalkInfo] " +
-                            $"WHERE IMEI = '{IMEI}'";
+            string sqlText = @$"SELECT 
+                                COUNT(1) AS CountOfWalk, 
+                                SUM(Distance) AS TotalDistance, 
+                                CAST(DATEADD(SECOND, SUM(DATEDIFF(SECOND, 0, CONVERT(TIME, TimeWalk))), 0) AS TIME(0)) AS TotalTime 
+                            FROM [dbo].[WalkInfo] 
+                            $WHERE IMEI = '{IMEI}'";
             try {
                 using (SqlConnection conn = new SqlConnection(Startup.CONNECTION_STRING)) {
                     using (SqlCommand cmd = new SqlCommand(sqlText, conn)) {

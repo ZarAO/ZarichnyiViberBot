@@ -86,9 +86,7 @@ namespace ViberBotServer.Viber
                             }
                             string tableOneDay = String.Format("{0}\n{1}", Strings.STR_HTMLTableTitleTemplate, rowsOneDay);
 
-                            await _viberBot.SendTextMessageAsync($"{textMessage.Text}\n\n\nЗа все время: \n{tableAllTime}\nЗа сегодня: \n{tableOneDay}", senderId);
-
-                            await _viberBot.SendKeyboardMessageAsync(senderId, "",
+                            await _viberBot.SendKeyboardMessageAsync(senderId, $"{textMessage.Text}\n\n\nЗа все время: \n{tableAllTime}\nЗа сегодня: \n{tableOneDay}",
                                 Strings.STR_GOBACK, Strings.STR_action_GOBACK, Strings.STR_track_GOBACK);
 
                             
